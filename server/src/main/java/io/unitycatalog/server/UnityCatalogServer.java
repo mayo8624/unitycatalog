@@ -17,6 +17,7 @@ import io.unitycatalog.server.service.TableService;
 import io.unitycatalog.server.service.TemporaryTableCredentialsService;
 import io.unitycatalog.server.service.TemporaryVolumeCredentialsService;
 import io.unitycatalog.server.service.VolumeService;
+import io.unitycatalog.server.service.credential.CredentialOperations;
 import io.unitycatalog.server.service.iceberg.FileIOFactory;
 import io.unitycatalog.server.service.iceberg.MetadataService;
 import io.unitycatalog.server.utils.RESTObjectMapper;
@@ -56,6 +57,9 @@ public class UnityCatalogServer {
     JacksonRequestConverterFunction unityConverterFunction =
         new JacksonRequestConverterFunction(unityMapper);
 
+    // Credentials Service
+    CredentialOperations credentialOperations = new CredentialOperations();
+
     // Add support for Unity Catalog APIs
     CatalogService catalogService = new CatalogService();
     SchemaService schemaService = new SchemaService();
@@ -63,7 +67,7 @@ public class UnityCatalogServer {
     TableService tableService = new TableService();
     FunctionService functionService = new FunctionService();
     TemporaryTableCredentialsService temporaryTableCredentialsService =
-        new TemporaryTableCredentialsService();
+        new TemporaryTableCredentialsService(credentialOperations);
     TemporaryVolumeCredentialsService temporaryVolumeCredentialsService =
         new TemporaryVolumeCredentialsService();
     sb.service("/", (ctx, req) -> HttpResponse.of("Hello, Unity Catalog!"))
@@ -83,7 +87,7 @@ public class UnityCatalogServer {
         new JacksonRequestConverterFunction(icebergMapper);
     JacksonResponseConverterFunction icebergResponseConverter =
         new JacksonResponseConverterFunction(icebergMapper);
-    MetadataService metadataService = new MetadataService(new FileIOFactory());
+    MetadataService metadataService = new MetadataService(new FileIOFactory(credentialOperations));
     sb.annotatedService(
         basePath + "iceberg",
         new IcebergRestCatalogService(catalogService, schemaService, tableService, metadataService),
