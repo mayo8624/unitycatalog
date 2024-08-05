@@ -18,7 +18,6 @@ import io.unitycatalog.server.persist.TableRepository;
 import io.unitycatalog.server.persist.utils.HibernateUtils;
 import io.unitycatalog.server.service.iceberg.MetadataService;
 import io.unitycatalog.server.utils.JsonUtils;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
