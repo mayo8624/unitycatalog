@@ -394,6 +394,8 @@ lazy val spark = (project in file("connectors/spark"))
     ),
     Compile / unmanagedJars += (serverAndClientShaded / assembly).value,
     Test / unmanagedJars += (serverAndClientShaded / assembly).value,
+    // TODO: enable the java assertion after Delta 3.2.1 is released.
+    // Test / javaOptions += "-ea",
     licenseDepExclusions := {
       case DepModuleInfo("org.hibernate.orm", _, _) => true
       case DepModuleInfo("jakarta.annotation", "jakarta.annotation-api", _) => true
